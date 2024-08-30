@@ -5,16 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>5e Character Sheet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,62.5..100,100..900;1,62.5..100,100..900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="main.css" />
 </head>
 
 <body>
     <div class="backing-parent">
-        <img class="ui-backing" src="media/MPMB-Header_BG.svg" alt="">
+        <img class="backing" src="media/MPMB-Header_BG.svg" alt="">
         <div class="contained-in-backing">
-            test
+            <div id="header-grid">
+                <input type="text" name="characterName" id="character-name" placeholder="(Your Character Name)">
+                <div id="header-info-box">
+                    <span id="level-and-class">
+                        <div id="level-label-wrapper"><label for="character-level">Level</label></div>
+                        <input type="text" name="characterLevel" id="character-level">
+                        <input type="text" name="characterClass" id="character-class">
+                    </span>
+                    <input type="text" name="playerName" id="player-name">
+                    <!---->
+                    <span class="subtitle-label">Level & Class</span>
+                    <span class="subtitle-label">Player Name</span>
+                    <!---->
+                    <input type="text" name="characterBackground" id="character-background">
+                    <input type="text" name="characterRace" id="character-race">
+                    <input type="text" name="characterSize" id="character-size">
+                    <input type="text" name="characterExperience" id="character-experience">
+                    <!---->
+                    <span class="subtitle-label">Background</span>
+                    <span class="subtitle-label">Race</span>
+                    <span class="subtitle-label">Size</span>
+                    <span class="subtitle-label">Experience</span>
+                </div>
+            </div>
         </div>
-        <img class="contained-in-backing" src="media/MPMB-Header_FG.svg" alt="">
+        <img class="backing contained-in-backing" src="media/MPMB-Header_FG.svg" alt="">
     </div>
 </body>
 
