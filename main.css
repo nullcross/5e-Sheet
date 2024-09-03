@@ -26,6 +26,7 @@ input, button, textarea, select, label {
 p, h1, h2, h3, h4, h5, h6 {
     overflow-wrap: break-word;
 }
+
 /* #endregion */
 
 
@@ -68,6 +69,8 @@ input[type="text"] {
 
 
 
+/* #region Header */
+
 #header-grid {
     height: 100%;
     padding: 8.5% 7.25% 4.75% 5.9%;
@@ -80,11 +83,13 @@ input[type="text"] {
 #character-name {
     margin: 8.25% 0 7%;
     border: none;
-    
+
     font-size: 1.5vw;
     text-align: center;
     transform: rotate(-1.5deg);
 }
+
+
 
 #header-info-box {
     padding: 1%;
@@ -112,13 +117,13 @@ input[type="text"] {
     gap: 0.25em;
 }
 
-#level-label-wrapper {
+.label-wrapper {
     display: flex;
     height: 100%;
     border-bottom: 1px dashed #babbbd;
 }
 
-#level-label-wrapper label {
+.label-wrapper > * {
     align-self: center;
 }
 
@@ -131,3 +136,22 @@ input[type="text"] {
     font-style: italic;
     filter: opacity(0.75);
 }
+
+#exp-container {
+    display: grid;
+    grid-template: 100% / 1.25fr 1fr;
+}
+
+#character-experience:only-child {
+    grid-column: span 2;
+}
+
+#xp-to-next-level {
+    align-self: flex-end;
+    margin-left: 0.4em;
+    
+    font-size: 0.75em;
+    color: #888;
+}
+
+/* #endregion */
