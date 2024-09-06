@@ -3,7 +3,8 @@ import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 
 // An array representing the universal stats of a character with a level equal to index.
 const levelStatKey = [
-    { "exp": 0, "proficiencyBonus": 2 },    // 0 (duplicate of 1, to make indexing consistent with levels)
+    { "doesnt-exist": true, 
+        "exp": 0, "proficiencyBonus": 2 },    // 0 (duplicate of 1, to make indexing consistent with levels)
     { "exp": 0, "proficiencyBonus": 2 },    // 1
     { "exp": 300, "proficiencyBonus": 2 },    // 2
     { "exp": 900, "proficiencyBonus": 2 },    // 3

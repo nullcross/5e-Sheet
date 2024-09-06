@@ -15,12 +15,15 @@
 </head>
 
 <body id="app">
+
     <div class="backing-parent">
         <img class="backing" src="media/MPMB-Header_BG.svg" alt="">
         <div class="contained-in-backing">
             <div id="header-grid">
 
-                <input type="text" name="characterName" id="character-name" placeholder="(Your Character Name)" :value="stats.characterName" @change="applyChanges">
+                <div id="character-name-wrapper">
+                    <input type="text" name="characterName" id="character-name" placeholder="(Your Character Name)" :value="stats.characterName" @change="applyChanges">
+                </div>
 
                 <div id="header-info-box">
                     <span id="level-and-class">
@@ -30,8 +33,12 @@
                     </span>
                     <input type="text" name="playerName" id="player-name" :value="stats.playerName" @change="applyChanges">
 
+                    <!--  -->
+
                     <span class="subtitle-label">Level & Class</span>
                     <span class="subtitle-label">Player Name</span>
+
+                    <!--  -->
 
                     <input type="text" name="characterBackground" id="character-background" :value="stats.characterBackground" @change="applyChanges">
                     <input type="text" name="characterRace" id="character-race" :value="stats.characterRace" @change="applyChanges">
@@ -43,6 +50,8 @@
                         </div>
                     </span>
 
+                    <!--  -->
+
                     <span class="subtitle-label">Background</span>
                     <span class="subtitle-label">Race</span>
                     <span class="subtitle-label">Size</span>
@@ -53,6 +62,7 @@
         </div>
         <img class="backing contained-in-backing" src="media/MPMB-Header_FG.svg" alt="">
     </div>
+
 </body>
 
 </html>
