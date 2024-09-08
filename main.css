@@ -32,16 +32,57 @@ p, h1, h2, h3, h4, h5, h6 {
 
 
 
+/* #region Theme Color Variables  */
+
+html, html.light {
+    --background-primary: #eee;
+    --text-primary: #000;
+    --text-secondary: #888;
+    --border-light: #a9aaad;
+    --button-hover: #d0d0d7;
+    --button-pressed: #b1b1b9;
+}
+
+html.dark {
+    --background-primary: #1b1b1b;
+    --text-primary: #fff;
+    --text-secondary: #777;
+    --border-light: #565552;
+    --button-hover: #2f2f28;
+    --button-pressed: #4e4e46;
+}
+
+/* #endregion */
+
+/* Invert SVGs since it's a hassle to change their color otherwise, but only for screens, not print and such */
+@media screen {
+    .dark img[src$=".svg"] {
+        filter: invert() brightness(85%);
+    }
+}
+
+
+
 body {
     margin: 0 auto;
     font-family: "Noto Sans", sans-serif;
+
+    background-color: var(--background-primary);
+    color: var(--text-primary);
 }
 
 /* above Landscape Full HD */
-@media screen and ((orientation: landscape) and (min-width: 1280px)) {
+@media (orientation: landscape) and (min-width: 1280px) {
     body {
         max-width: 96rem;
     }
+}
+
+
+input[type="text"] {
+    background: none;
+    border: 1px dashed var(--text-secondary);
+    color: var(--text-primary);
 }
 
 
@@ -64,9 +105,43 @@ body {
 
 
 
-input[type="text"] {
-    background: none;
-    border: 1px dashed #4af;
+@media print {
+    #meta-ui {
+        display: none;
+    }
+}
+
+
+#toggle-theme {
+    --bottom-radius: 6px;
+
+    position: absolute;
+    top: 0;
+    right: 4em;
+
+    width: 2em;
+    height: 2em;
+    height: calc(2em - var(--bottom-radius) / 2);
+    padding: 0.25em;
+
+    border-radius: 0 0 var(--bottom-radius) var(--bottom-radius);
+    border: 1px solid var(--text-secondary);
+    border-top: none;
+
+    background-color: var(--background-primary);
+}
+
+#toggle-theme:focus, #toggle-theme:hover {
+    background-color: var(--button-hover);
+}
+
+#toggle-theme:active {
+    background-color: var(--button-pressed);
+}
+
+#toggle-theme img {
+    height: 100%;
+    margin: 0 auto;
 }
 
 
@@ -102,7 +177,7 @@ input[type="text"] {
 }
 
 /* below Landscape Full HD */
-@media screen and ((orientation: portrait) or (max-width: 1280px)) {
+@media (orientation: portrait) or (max-width: 1280px) {
     #character-name {
         font-size: 2.6vw;
     }
@@ -120,7 +195,7 @@ input[type="text"] {
 }
 
 /* below Landscape Full HD */
-@media screen and ((orientation: portrait) or (max-width: 1280px)) {
+@media (orientation: portrait) or (max-width: 1280px) {
     #header-info-box {
         font-size: 1.4vw;
     }
@@ -129,7 +204,7 @@ input[type="text"] {
 #header-info-box input[type="text"] {
     border: none;
     padding: 0;
-    border-bottom: 1px solid #babbbd;
+    border-bottom: 1px solid var(--border-light);
     width: 100%;
 }
 
@@ -147,7 +222,7 @@ input[type="text"] {
 .label-wrapper {
     display: flex;
     height: 100%;
-    border-bottom: 1px dashed #babbbd;
+    border-bottom: 1px dashed var(--border-light);
 }
 
 .label-wrapper > * {
@@ -178,7 +253,7 @@ input[type="text"] {
     margin-left: 0.4em;
 
     font-size: 0.75em;
-    color: #888;
+    color: var(--text-secondary);
 }
 
 /* #endregion */
