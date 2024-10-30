@@ -6,6 +6,14 @@ const themes = [
     { "index": 1, "className": "dark", "displayName": "Dark", "iconSrc": "media/fa-moon-solid.svg" },
 ];
 
+// Enum structure taken from https://stackoverflow.com/a/44447975
+const NumberTypes = Object.freeze({
+    INT: Symbol("int"),
+    FLOAT: Symbol("float"),
+})
+
+
+
 // An array representing the universal stats of a character with a level equal to index.
 const levelStatKey = [
     {
@@ -34,14 +42,33 @@ const levelStatKey = [
     { "exp": 355000, "proficiencyBonus": 6 },    // 20
 ];
 
-const localeTestNumber = Intl.NumberFormat().format("1,000.01");
+
+
+// Applies the default number format, i.e. the number format of the user's browser, then gets whatever the resulting separators are
+const localeTestNumber = Intl.NumberFormat().format(1000.01);
 const thousandsSeparator = localeTestNumber.charAt(1);
 const decimalSeparator = localeTestNumber.charAt(5);
 
-function parseIntFormatted(stringToParse)
+/**
+ * Uses regex to turn a number formatted in the browser's locale into one javascript parsing functions can understand, 
+ * then returns the result of the passed parser function.
+ * @param {String} stringToParse 
+ * @param {function(String):Number} parser 
+ * @returns `stringToParse` as parsed by `parser`.
+ */
+function parseNumberInternational(stringToParse, parser)
 {
-    return parseInt(stringToParse.replace(new RegExp(`\\${thousandsSeparator}|\\${decimalSeparator}.*$`, "g"), ""));
+    // Removes all thousands separators; unnecessary for parsing
+    stringToParse = stringToParse.replace(new RegExp(`\\${thousandsSeparator}`, "g"), "");
+    // Replaces all decimal separtors with `.`; this is the only decimal separator native javascript parsers accept
+    stringToParse = stringToParse.replace(new RegExp(`\\${decimalSeparator}`, "g"), ".");
+
+    return parser(stringToParse);
 }
+
+function formatNumber(num) { return typeof num === "number" ? Intl.NumberFormat().format(num) : num; }
+
+
 
 createApp({
     setup()
@@ -50,7 +77,7 @@ createApp({
 
         const stats = ref({
             "characterName": "",
-            "characterLevel": 0,
+            "characterLevel": "",
             "characterClass": "",
             "playerName": "",
             "characterBackground": "",
@@ -91,34 +118,62 @@ createApp({
         function applyChanges(e) { stats.value[e.target.name] = e.target.value; }
 
 
-        function applyParsedChanges(e, preferUnparsed = false)
+        function applyParsedChanges(e, parseType, allowUnparseable = true)
         {
-            let parseAttempt = parseIntFormatted(e.target.value);
-
-            // Deliberate soft equals; if we truncated anything and we prefer unparsed data, use said unparsed data for accuracy's sake
-            if (Number.isNaN(parseAttempt) || (preferUnparsed && parseAttempt != e.target.value))
+            let parser;
+            switch (parseType)
             {
+                case NumberTypes.INT:
+                    parser = parseInt;
+                    break;
+
+                case NumberTypes.FLOAT:
+                default:
+                    parser = parseFloat;
+                    break;
+            }
+
+            let parseAttempt = parseNumberInternational(e.target.value, parser);
+
+            // If parse was successful (result is a non-NaN number), apply that to stats
+            if (!Number.isNaN(+parseAttempt))
+            {
+                stats.value[e.target.name] = parseAttempt;
+            }
+            // If it wasn't, don't do anything unless we allow unparsable entries
+            else if (allowUnparseable)
+            {
+                stats.value[e.target.name] = e.target.value;
+            }
+        }
+
+
+        function sanitizeInt(e, allowEmpty, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) { sanitizeNumber(e, allowEmpty, num => parseNumberInternational(num, parseInt), min, max); }
+        function sanitizeFloat(e, allowEmpty, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) { sanitizeNumber(e, allowEmpty, num => parseNumberInternational(num, parseFloat), min, max); }
+
+        function sanitizeNumber(e, allowEmpty, parser, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY)
+        {
+            if (allowEmpty && e.target.value.trim() === "") {
                 stats.value[e.target.name] = e.target.value;
                 return;
             }
 
-            stats.value[e.target.name] = parseAttempt;
-        }
+            // Remove all letters besides e (and mathematically invalid e's) that might have snuck in
+            let sanitized = e.target.value.replace(/[a-df-z]|^e+|e+$/gi, "");
 
+            // Remove all but the last e (match every e that has an e ahead of it), then try to parse. 
+            sanitized = parser(e.target.value.replace(/e(?=.*e)/gi, ""));
 
-        function sanitizeNumber(e, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY)
-        {
-            // Remove all letters that might have snuck in, then try to parse
-            let sanitized = parseIntFormatted(e.target.value.replace(/[a-z]/gi, ""));
-
-            // If parsing failed, reset input to its last valid value
-            if (isNaN(sanitized))
+            // If parsing failed (any non-number, invalid for this function), reset input to its last valid value
+            if (Number.isNaN(+sanitized))
             {
                 e.target.value = stats.value[e.target.name]
                 return;
             }
 
+            // Clamp to desired range; take min if it's larger than sanitized, then take max if it's smaller than sanitized.
             stats.value[e.target.name] = Math.min(Math.max(sanitized, min), max);
+            e.target.value = stats.value[e.target.name];
         }
 
 
@@ -129,12 +184,16 @@ createApp({
         })
 
         return {
+            NumberTypes,
             stats,
             levelStatKey,
+            formatNumber,
 
             setTheme,
             applyChanges,
             applyParsedChanges,
+            sanitizeInt,
+            sanitizeFloat,
             sanitizeNumber
         }
     }

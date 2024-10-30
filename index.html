@@ -34,7 +34,7 @@
                 <div id="header-info-box">
                     <span id="level-and-class">
                         <div class="label-wrapper"><label for="character-level">Level</label></div>
-                        <input type="text" name="characterLevel" id="character-level" :value="stats.characterLevel" @change="sanitizeNumber($event, 0, 20)">
+                        <input type="text" name="characterLevel" id="character-level" :value="stats.characterLevel" @change="sanitizeInt($event, true, 0)">
                         <input type="text" name="characterClass" id="character-class" :value="stats.characterClass" @change="applyChanges">
                     </span>
                     <input type="text" name="playerName" id="player-name" :value="stats.playerName" @change="applyChanges">
@@ -50,10 +50,15 @@
                     <input type="text" name="characterRace" id="character-race" :value="stats.characterRace" @change="applyChanges">
                     <input type="text" name="characterSize" id="character-size" :value="stats.characterSize" @change="applyChanges">
                     <span id="exp-container">
-                        <input type="text" name="characterExperience" id="character-experience" :value="stats.characterExperience" @change="applyParsedChanges">
-                        <div class="label-wrapper" v-if="Number.isInteger(stats.characterExperience) && stats.characterLevel < 20">
-                            <span id="xp-to-next-level">/ {{levelStatKey[stats.characterLevel + 1].exp}}</span>
+
+                        <input type="text" name="characterExperience" id="character-experience" :value="formatNumber(stats.characterExperience)"
+                            @change="applyParsedChanges($event, NumberTypes.FLOAT)">
+
+                        <div class="label-wrapper"
+                            v-if="stats.characterLevel > 0 && stats.characterLevel < 20 && (/^\s*$/g.test(stats.characterExperience) || typeof stats.characterExperience === 'number')">
+                            <span id="xp-to-next-level">/ {{formatNumber(levelStatKey[stats.characterLevel + 1].exp)}}</span>
                         </div>
+
                     </span>
 
                     <!--  -->
